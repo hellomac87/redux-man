@@ -5,6 +5,12 @@ import React, { Component } from 'react';
 // react-redux 라이브러리를 사용해서 리액트와 리덕스를 연결하여 리덕스 안의 스테이트를 리액트 컴포넌트에서 사용 할 수 있게 해준다.
 import { connect } from 'react-redux'; // 파일로부터 싱글 프로퍼티를 가져오기 위해 {}사용
 
+// 액션 생성자 관련
+import { selectBook } from '../actions/index'; // 액션 생성자를 불러온다.
+import { bindActionCreators } from 'redux'; // 리덕스로부터 bindActionCreators 함수 불러옴
+
+// bindActionCreators :: 액션 생성자 함수, 이에 생성된 모든 액션이 실제로 모든 리듀서에 흘러가는지 확인
+
 class BookList extends Component {
 
     // 북 리스트를 작성하는 부분을 함수로 작성
@@ -34,4 +40,14 @@ function mapStateToProps(state){
     };
 }
 
-export default connect(mapStateToProps)(BookList);
+// mapDispatchToProps :: 이 함수로 반환받는 것이, BookList 컨테이너의 props로 연결된다.
+function mapDispatchToProps(dispatch){
+    // selectBook 이 호출 될 때마다, 결과는 리듀서로 전달되어야 한다.
+    // 모든 액션들을 가져와서 어플리케이션 모든 리듀서에 전달하는 역할을 하는 것이 bindActionCreators, dispatch 의 역할
+    return bindActionCreators({ selectBook : selectBook }, dispatch)
+    //{ selectBook : selectBook(실제 액션 생성자) }
+}
+
+// 캄포넌트에서 컨테이너로 BookList를 바꿔야 하는데
+// 이는 새로운 dispatch 메소드인 selectBook을 알아야 하고, 이는 props로 이용 가능하다.
+export default connect(mapStateToProps, mapDispatchToProps)(BookList);
